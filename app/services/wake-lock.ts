@@ -1,14 +1,11 @@
-import Service from '@ember/service';
 import { action } from '@ember/object';
+import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 export default class WakeLockService extends Service {
-  // track the current sentinel or null
   @tracked private sentinel: WakeLockSentinel | null = null;
 
-  /**
-   * Check if wake lock is currently active
-   */
+  // Check if wake lock is currently active
   get isActive(): boolean {
     return this.sentinel !== null && !this.sentinel.released;
   }
@@ -21,16 +18,13 @@ export default class WakeLockService extends Service {
   willDestroy(): void {
     super.willDestroy();
     document.removeEventListener('visibilitychange', this._onVisibilityChange);
-    // fire-and-forget release
     void this.releaseWakeLock();
   }
 
-  /**
-   * Acquire a screen wake lock if supported and not already held.
-   */
+  // Acquire a screen wake lock if supported and not already held.
   @action
   public async requestWakeLock(): Promise<void> {
-    if (!('wakeLock' in navigator) || this.sentinel) {
+    if (!('wakeLock' in navigator) || this.sentinel !== null) {
       return;
     }
     try {
@@ -46,9 +40,7 @@ export default class WakeLockService extends Service {
     }
   }
 
-  /**
-   * Release the current wake lock, if any.
-   */
+  // Release the current wake lock, if any.
   @action
   public async releaseWakeLock(): Promise<void> {
     if (!this.sentinel) {
@@ -64,13 +56,14 @@ export default class WakeLockService extends Service {
     }
   }
 
-  /**
-   * Re-acquire on show, release on hide.
-   */
   private _onVisibilityChange = (): void => {
     if (document.visibilityState === 'visible') {
+      // page is back in front, try to re-lock
+      console.log('Page is visible, attempting to acquire wake lock');
       void this.requestWakeLock();
     } else {
+      // page hidden → UA likely already released it, but cleanup anyway
+      console.log('Page is hidden, releasing wake lock');
       void this.releaseWakeLock();
     }
   };
