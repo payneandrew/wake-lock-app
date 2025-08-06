@@ -1,56 +1,304 @@
-/* Ember supports plain CSS out of the box. More info: https://cli.emberjs.com/release/advanced-use/stylesheets/ */
+/* reset & base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  color: #33475b;
+  background: #f6f9fc;
+  line-height: 1.5;
+}
 
+/* NAVIGATION */
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.site-nav__logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.site-nav__logo-img {
+  height: 40px; /* tweak to taste */
+  width: auto;
+}
+.site-nav__links {
+  display: flex;
+  gap: 2rem;
+}
+.site-nav__links a {
+  font-weight: 500;
+  color: #33475b;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.site-nav__links a:hover {
+  color: #005faa;
+}
+.site-nav__cta {
+  display: flex;
+  gap: 1rem;
+}
+.btn {
+  padding: 0.5rem 1.25rem;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn--primary {
+  background: #005faa;
+  color: white;
+}
+.btn--primary:hover {
+  background: #004780;
+}
+.btn--outline {
+  background: transparent;
+  color: #005faa;
+  border-color: #005faa;
+}
+.btn--outline:hover {
+  background: #005faa;
+  color: white;
+}
+
+/* HERO */
+.hero {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(to right, #ffffff, #eef6fc);
+}
+.hero__title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #33475b;
+  margin-bottom: 1rem;
+}
+.hero__subtitle {
+  font-size: 1.125rem;
+  color: #556777;
+  margin-bottom: 2rem;
+  max-width: 600px;
+}
+
+/* COMPONENT WRAPPER */
 .app-container {
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
   text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.app-container h1 {
-  color: #333;
-  margin-bottom: 2rem;
+.wake-lock-card {
+  background: white;
+  padding: 2rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  display: inline-block;
+  text-align: center;
 }
 
+/* adjust the section heading */
+.app-container .hero__title {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+/* -------- TOGGLE SWITCH + STATUS -------- */
 .wake-lock-toggle {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1.5rem;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
-.toggle-button {
-  font-size: 1.2rem;
-  padding: 1rem 2rem;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  background: white;
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 200px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #33475b;
 }
 
-.toggle-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.toggle-text {
+  font-weight: 600;
+  min-width: 140px;
+  text-align: right;
 }
 
-.toggle-button.active {
-  background: #4CAF50;
-  color: white;
-  border-color: #4CAF50;
+.toggle-switch {
+  position: relative;
+  width: 60px;
+  height: 32px;
 }
 
-.toggle-button.inactive {
-  background: #f44336;
-  color: white;
-  border-color: #f44336;
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: 0.3s ease;
+  border-radius: 32px;
+  border: 2px solid #e2e8f0;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s ease;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-input:checked + .toggle-slider {
+  background-color: #005faa;
+  border-color: #004780;
+}
+
+.toggle-input:checked + .toggle-slider:before {
+  transform: translateX(28px);
+}
+
+.toggle-switch:hover .toggle-slider {
+  box-shadow: 0 0 0 3px rgba(0, 95, 170, 0.1);
+}
+
+.status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-indicator {
+  font-size: 1.125rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 2px solid;
+  min-width: 80px;
+  text-align: center;
+}
+
+.status-indicator.active {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #22c55e;
+}
+
+.status-indicator.inactive {
+  background: #f8fafc;
+  color: #64748b;
+  border-color: #cbd5e1;
+}
+
+/* Status text */
 .status {
-  color: #666;
-  font-size: 0.9rem;
+  color: #556777;
+  font-size: 0.95rem;
+  max-width: 260px;
+  line-height: 1.4;
+}
+
+/* Events log */
+.events-log {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e3e8ee;
+  text-align: left;
+  max-width: 400px;
+}
+
+.events-log h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #33475b;
+  margin-bottom: 1rem;
+}
+
+.events-list {
+  list-style: none;
+  padding: 0;
   margin: 0;
-  max-width: 300px;
+}
+
+.event-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  border-left: 3px solid #e3e8ee;
+}
+
+.event-item.event-success {
+  background: #f0fdf4;
+  border-left-color: #22c55e;
+}
+
+.event-item.event-error {
+  background: #fef2f2;
+  border-left-color: #ef4444;
+}
+
+.event-item.event-info {
+  background: #f8fafc;
+  border-left-color: #3b82f6;
+}
+
+.event-time {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.event-message {
+  color: #374151;
+  line-height: 1.4;
 }

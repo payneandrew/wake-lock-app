@@ -2,12 +2,31 @@ import { action } from '@ember/object';
 import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
+interface WakeLockEvent {
+  id: string;
+  message: string;
+  timestamp: Date;
+  type: 'info' | 'error' | 'success';
+}
+
 export default class WakeLockService extends Service {
   @tracked private sentinel: WakeLockSentinel | null = null;
+  @tracked public events: WakeLockEvent[] = [];
+  @tracked public userWantsWakeLock: boolean = false;
 
   // Check if wake lock is currently active
   get isActive(): boolean {
     return this.sentinel !== null && !this.sentinel.released;
+  }
+
+  private addEvent(message: string, type: 'info' | 'error' | 'success'): void {
+    const event: WakeLockEvent = {
+      id: Math.random().toString(36).substring(2, 15),
+      message,
+      timestamp: new Date(),
+      type,
+    };
+    this.events = [event, ...this.events.slice(0, 9)];
   }
 
   constructor() {
@@ -30,13 +49,13 @@ export default class WakeLockService extends Service {
     try {
       const sentinel = await navigator.wakeLock.request('screen');
       this.sentinel = sentinel;
-      console.log('Wake lock activated - screen will stay awake');
+      this.addEvent('Wake lock activated - screen will stay awake', 'success');
       sentinel.onrelease = () => {
         this.sentinel = null;
-        console.log('Wake lock released - screen may turn off');
+        this.addEvent('Wake lock released', 'error');
       };
     } catch (err) {
-      console.error('WakeLock request failed:', err);
+      this.addEvent(`WakeLock request failed: ${err}`, 'error');
     }
   }
 
@@ -48,22 +67,41 @@ export default class WakeLockService extends Service {
     }
     try {
       await this.sentinel.release();
-      console.log('Wake lock manually released');
+      this.addEvent('Wake lock manually released', 'error');
     } catch (err) {
-      console.error('WakeLock release failed:', err);
+      this.addEvent(`WakeLock release failed: ${String(err)}`, 'error');
     } finally {
       this.sentinel = null;
     }
   }
 
+  // Toggle wake lock based on user preference
+  @action
+  public async toggleWakeLockPreference(): Promise<void> {
+    this.userWantsWakeLock = !this.userWantsWakeLock;
+
+    if (this.userWantsWakeLock) {
+      this.addEvent('User enabled wake lock', 'info');
+      await this.requestWakeLock();
+    } else {
+      this.addEvent('User disabled wake lock', 'info');
+      await this.releaseWakeLock();
+    }
+  }
+
   private _onVisibilityChange = (): void => {
     if (document.visibilityState === 'visible') {
-      // page is back in front, try to re-lock
-      console.log('Page is visible, attempting to acquire wake lock');
-      void this.requestWakeLock();
+      // page is back in front, only try to re-lock if user wants it
+      if (this.userWantsWakeLock) {
+        this.addEvent(
+          'Page is visible, attempting to acquire wake lock',
+          'info',
+        );
+        void this.requestWakeLock();
+      }
     } else {
       // page hidden → UA likely already released it, but cleanup anyway
-      console.log('Page is hidden, releasing wake lock');
+      //   this.addEvent('Page is hidden, releasing wake lock', 'info');
       void this.releaseWakeLock();
     }
   };

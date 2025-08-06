@@ -1,15 +1,44 @@
 <div class="wake-lock-toggle">
-  <button
-    type="button"
-    class="toggle-button {{if this.isActive 'active' 'inactive'}}"
-    {{on "click" this.toggleWakeLock}}
-  >
-    {{if this.isActive "🔒 Wake Lock ON" "🔓 Wake Lock OFF"}}
-  </button>
-  <p class="status">
-    {{if this.isActive 
-      "Screen will stay awake while this tab is active" 
-      "Screen may turn off according to system settings"
-    }}
-  </p>
+  <div class="toggle-container">
+    <label class="toggle-label">
+      <span class="toggle-text">
+        {{if this.isEnabled "Turn OFF Wake Lock" "Turn ON Wake Lock"}}
+      </span>
+      <div class="toggle-switch">
+        <input
+          type="checkbox"
+          checked={{this.isEnabled}}
+          {{on "change" this.toggleWakeLock}}
+          class="toggle-input"
+        />
+        <span class="toggle-slider"></span>
+      </div>
+    </label>
+  </div>
+  
+  <div class="status-container">
+    <div class="status-indicator {{if this.isActive 'active' 'inactive'}}">
+      {{if this.isActive "🔒 ON" "🔓 OFF"}}
+    </div>
+    <p class="status">
+      {{if this.isActive 
+        "Screen will stay awake while this tab is active" 
+        "Screen may turn off according to system settings"
+      }}
+    </p>
+  </div>
+
+  {{#if this.wakeLockService.events.length}}
+    <div class="events-log">
+      <h3>Recent Events</h3>
+      <ul class="events-list">
+        {{#each this.wakeLockService.events as |event|}}
+          <li class="event-item event-{{event.type}}">
+            <span class="event-time">{{format-time event.timestamp}}</span>
+            <span class="event-message">{{event.message}}</span>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
 </div>

@@ -1,8 +1,45 @@
-{{page-title "Wake Lock App"}}
+<nav class="site-nav">
+  <a href="/" class="site-nav__logo">
+    <img
+      src="/assets/welld_logo.svg"
+      alt="Welld Health"
+      class="site-nav__logo-img"
+    />
+  </a>
+  <div class="site-nav__links">
+    <a href="#">Features</a>
+    <a href="#">Solutions</a>
+    <a href="#">Careers</a>
+    <a href="#">About</a>
+  </div>
+  <div class="site-nav__cta">
+    <button class="btn btn--outline" type="button">Support Center</button>
+    <button class="btn btn--primary" type="button">Login</button>
+  </div>
+</nav>
+
+{{! <section class="hero">
+  <div>
+    <h1 class="hero__title">
+      The
+      <em>only</em>
+      Electronic Wellness Record you need to build<br />
+      sustainable health programs
+    </h1>
+    <p class="hero__subtitle">
+      Keep your users’ health data centralized, secure, and actionable with
+      Welld’s end-to-end wellness record platform.
+    </p>
+    <button class="btn btn--primary" type="button">Schedule a Demo</button>
+  </div>
+</section> }}
 
 <div class="app-container">
-  <h1>Wake Lock Demo</h1>
-  <WakeLockToggle />
+  <h2 class="hero__title">Wake Lock Demo</h2>
+
+  <div class="wake-lock-card">
+    <WakeLockToggle />
+  </div>
 </div>
 
 {{outlet}}
