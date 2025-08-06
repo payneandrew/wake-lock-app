@@ -1,0 +1,15 @@
+<div class="wake-lock-toggle">
+  <button
+    type="button"
+    class="toggle-button {{if this.isActive 'active' 'inactive'}}"
+    {{on "click" this.toggleWakeLock}}
+  >
+    {{if this.isActive "🔒 Wake Lock ON" "🔓 Wake Lock OFF"}}
+  </button>
+  <p class="status">
+    {{if this.isActive 
+      "Screen will stay awake while this tab is active" 
+      "Screen may turn off according to system settings"
+    }}
+  </p>
+</div>
