@@ -11,11 +11,11 @@ export default class WakeLockToggleComponent extends Component {
   }
 
   get isEnabled(): boolean {
-    return this.wakeLockService.userWantsWakeLock;
+    return this.wakeLockService.enabled;
   }
 
   @action
   async toggleWakeLock(): Promise<void> {
-    await this.wakeLockService.toggleWakeLockPreference();
+    await this.wakeLockService.toggle();
   }
 }
