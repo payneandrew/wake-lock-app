@@ -2,15 +2,6 @@ import { action } from '@ember/object';
 import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
-type MessageType = 'info' | 'error' | 'success';
-
-interface WakeLockEvent {
-  id: string;
-  message: string;
-  timestamp: Date;
-  type: MessageType;
-}
-
 export default class WakeLockService extends Service {
   @tracked private sentinel: WakeLockSentinel | null = null;
   @tracked public events: WakeLockEvent[] = [];
@@ -95,4 +86,13 @@ export default class WakeLockService extends Service {
     // Keep the last 10 events
     this.events = [event, ...this.events.slice(0, 9)];
   }
+}
+
+type MessageType = 'info' | 'error' | 'success';
+
+interface WakeLockEvent {
+  id: string;
+  message: string;
+  timestamp: Date;
+  type: MessageType;
 }
