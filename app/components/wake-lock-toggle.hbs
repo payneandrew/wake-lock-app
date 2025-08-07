@@ -2,12 +2,12 @@
   <div class="toggle-container">
     <label class="toggle-label">
       <span class="toggle-text">
-        {{if this.isEnabled "Turn OFF Wake Lock" "Turn ON Wake Lock"}}
+        {{if this.isToggleEnabled "Turn OFF Wake Lock" "Turn ON Wake Lock"}}
       </span>
       <div class="toggle-switch">
         <input
           type="checkbox"
-          checked={{this.isEnabled}}
+          checked={{this.isToggleEnabled}}
           {{on "change" this.toggleWakeLock}}
           class="toggle-input"
         />
@@ -15,14 +15,15 @@
       </div>
     </label>
   </div>
-  
+
   <div class="status-container">
     <div class="status-indicator {{if this.isActive 'active' 'inactive'}}">
       {{if this.isActive "🔒 ON" "🔓 OFF"}}
     </div>
     <p class="status">
-      {{if this.isActive 
-        "Screen will stay awake while this tab is active" 
+      {{if
+        this.isActive
+        "Screen will stay awake while this tab is active"
         "Screen may turn off according to system settings"
       }}
     </p>

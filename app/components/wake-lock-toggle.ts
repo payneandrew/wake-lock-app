@@ -1,6 +1,6 @@
-import Component from '@glimmer/component';
-import { service } from '@ember/service';
 import { action } from '@ember/object';
+import { service } from '@ember/service';
+import Component from '@glimmer/component';
 import type WakeLockService from '../services/wake-lock';
 
 export default class WakeLockToggleComponent extends Component {
@@ -10,8 +10,8 @@ export default class WakeLockToggleComponent extends Component {
     return this.wakeLockService.isActive;
   }
 
-  get isEnabled(): boolean {
-    return this.wakeLockService.enabled;
+  get isToggleEnabled(): boolean {
+    return this.wakeLockService.isToggleEnabled;
   }
 
   @action

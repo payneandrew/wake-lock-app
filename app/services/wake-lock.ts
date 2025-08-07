@@ -14,7 +14,7 @@ interface WakeLockEvent {
 export default class WakeLockService extends Service {
   @tracked private sentinel: WakeLockSentinel | null = null;
   @tracked public events: WakeLockEvent[] = [];
-  @tracked public enabled: boolean = false;
+  @tracked public isToggleEnabled: boolean = false;
 
   // Check if wake lock is currently active
   get isActive(): boolean {
@@ -54,9 +54,8 @@ export default class WakeLockService extends Service {
   // Release the current wake lock, if any.
   @action
   public async releaseWakeLock(): Promise<void> {
-    if (!this.sentinel) {
-      return;
-    }
+    // If no wake lock is held, do nothing.
+    if (!this.sentinel) return;
     try {
       await this.sentinel.release();
     } catch (err) {
@@ -68,31 +67,29 @@ export default class WakeLockService extends Service {
 
   @action
   public async toggle(): Promise<void> {
-    this.enabled = !this.enabled;
-
-    if (this.enabled) {
-      await this.requestWakeLock();
-    } else {
-      await this.releaseWakeLock();
-    }
+    this.isToggleEnabled = !this.isToggleEnabled;
+    await (this.isToggleEnabled
+      ? this.requestWakeLock()
+      : this.releaseWakeLock());
   }
 
   private _onVisibilityChange = (): void => {
-    if (document.visibilityState === 'visible' && this.enabled) {
+    if (document.visibilityState === 'visible' && this.isToggleEnabled) {
       this.addEvent('Page visible, reactivating wake lock', 'info');
       void this.requestWakeLock();
-    } else if (document.visibilityState === 'hidden') {
+    } else {
       void this.releaseWakeLock();
     }
   };
 
   private addEvent(message: string, type: MessageType): void {
     const event: WakeLockEvent = {
-      id: Math.random().toString(36).substring(2, 15),
+      id: crypto.randomUUID(),
       message,
       timestamp: new Date(),
       type,
     };
+    // Keep the last 10 events
     this.events = [event, ...this.events.slice(0, 9)];
   }
 }
