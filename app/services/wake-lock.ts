@@ -23,12 +23,15 @@ export default class WakeLockService extends Service {
 
   constructor() {
     super();
-    document.addEventListener('visibilitychange', this._onVisibilityChange);
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
   }
 
   willDestroy(): void {
     super.willDestroy();
-    document.removeEventListener('visibilitychange', this._onVisibilityChange);
+    document.removeEventListener(
+      'visibilitychange',
+      this.handleVisibilityChange,
+    );
     void this.releaseWakeLock();
   }
 
@@ -73,7 +76,7 @@ export default class WakeLockService extends Service {
       : this.releaseWakeLock());
   }
 
-  private _onVisibilityChange = (): void => {
+  private handleVisibilityChange = (): void => {
     if (document.visibilityState === 'visible' && this.isToggleEnabled) {
       this.addEvent('Page visible, reactivating wake lock', 'info');
       void this.requestWakeLock();
